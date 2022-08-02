@@ -1,0 +1,13 @@
+####################################
+#    Parameters for All Scripts    #
+#  1 Volcano, 1 Year of Detections #
+####################################
+
+#format correctly at some point - YT vid to explain .yaml/.yml?
+#Add volc_list, etc. up here?
+
+v = Hood_sta #list of stations for volcano
+vv = 1 #number (0-4) of volcano in volc_list or volc_list_sta or volc_list_names (will be same number for each list)
+year = 2019 #year to run and clean detections over and to find events from
+homedir = '/home/smocz/redpy_expand_new_files/' #home directory or directory to save new files to (outside of github repo)
+datadir = '/data/wsd01/HOOD_data/UW/' #directory to get downloaded waveforms from

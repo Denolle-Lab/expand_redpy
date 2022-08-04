@@ -1,13 +1,55 @@
-####################################
-#    Parameters for All Scripts    #
-#  1 Volcano, 1 Year of Detections #
-####################################
+###################################################
+## CONFIGURATION FILE                            ##
+## copy this file to working dir. and edit       ##
+###################################################
 
-#format correctly at some point - YT vid to explain .yaml/.yml?
-#Add volc_list, etc. up here?
+# =================================================
+# GENERAL
+# =================================================
 
-v = Hood_sta #list of stations for volcano
-vv = 1 #number (0-4) of volcano in volc_list or volc_list_sta or volc_list_names (will be same number for each list)
-year = 2019 #year to run and clean detections over and to find events from
-homedir = '/home/smocz/redpy_expand_new_files/' #home directory or directory to save new files to (outside of github repo)
-datadir = '/data/wsd01/HOOD_data/UW/' #directory to get downloaded waveforms from
+#home directory or directory to save new files to (outside of github repo)
+homedir: /home/smocz/expand_redpy_new_files/
+#directory to get downloaded waveforms from
+datadir: /fd1/wave_data/ 
+#year to run and find events from
+year: 2019
+#number in this list (0-4): volc_list_names = ['Baker','Hood','Newberry','Rainier','St_Helens'] the volcano you want to run is on.
+#set on each individual script if running multiple volcanoes at the same time in the same directory
+vv: 3
+
+# =================================================
+# STREAM FILTERING
+# =================================================
+
+#min and max for bandpass filter
+fqmin: 1 
+fqmax: 10
+#sampling rate to resample to
+fs: 40
+#channel to look at
+chan: *HZ
+
+# =================================================
+# DETECT PARAMETERS
+# =================================================
+
+#prepick length
+prepick_len: 0.3
+#trig_int, minimum separation between detections in seconds
+trig_int: 6
+#threshold_type, affects how thr is formatted, absolute recommended 
+thr_t: absolute
+#threshold, minimum cross correlation value to count as a detection
+thr: 0.6
+#xcorr_func, cross correlation function, fmf recommended
+xfunc: fmf
+#plot, should a plot be shown for each detection
+plot: False
+#return_stream, does or does not output the downloaded stream
+r_st: False
+#ignore_bad_data, whether to stop at (False) or skip over (True) missing/too many zeroes data
+i_b_d: True
+#overlap, the overlap in testing for cross correlation or detections, calculate is recommended
+overlap: calculate
+#metric, metric to sort party of detections by
+metric: avg_cor

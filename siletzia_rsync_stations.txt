@@ -1,0 +1,32 @@
+General command (on pnwstore to siletzia):
+rsync -av -e "ssh -p 7777" */STA.NN.YEAR.* */STA2.NN.YEAR.* smocz@siletzia.ess.washington.edu:/fd1/wave_data/2019/NN/
+
+#could get rid of NN.YEAR since I'm already in a certain year's and network's folder.
+
+#list for all stations that have templates (as of AUG 1, 2022), in rsync form, then just a list of stations, and any stations that seem to be missing entirely from pnwstore
+
+#could make a simple python notebook to spit out the version I use in coding from a list (a for replace loop to replace each station in the list with the new format then split with space:
+sta_list = [do-stuff-to-i-here for i in sta_list]
+print(sta_list.split())
+                        )?
+
+------------------------
+CC:
+*/BRSP.CC.2019.* */HIYU.CC.2019.* */PALM.CC.2019.* */SHRK.CC.2019.* */TIMB.CC.2019.* */YOCR.CC.2019.* */ASBU.CC.2019.* */CPCO.CC.2019.* */NORM.CC.2019.* */SVIC.CC.2019.* */SWNB.CC.2019.* */TMBU.CC.2019.* */CRBN.CC.2019.* */GTWY.CC.2019.* */KAUT.CC.2019.* */OBSR.CC.2019.* */OPCH.CC.2019.* */PANH.CC.2019.* */PARA.CC.2019.* */PR01.CC.2019.* */PR02.CC.2019.* */PR03.CC.2019.* */PR04.CC.2019.* */PR05.CC.2019.* */RUSH.CC.2019.* */SIFT.CC.2019.* */VOIT.CC.2019.* */REM.CC.2019.* */SEP.CC.2019.* */STD.CC.2019.* */SUG.CC.2019.* */HOA.CC.2019.* */JRO.CC.2019.* */LOO.CC.2019.* */MAR.CC.2019.* */NFT.CC.2019.* */SWF2.CC.2019.* */SWFL.CC.2019.* */UNFR.CC.2019.* */VALT.CC.2019.*
+
+list form: [BRSP,HIYU,PALM,SHRK,TIMB,YOCR,ASBU,CPCO,NORM,SVIC,SWMB,TMBU,CRBN,GTWY,KAUT,OBSR,OPCH,PANH,PARA,PR01,PR02,PR03,PR04,PR05,RUSH,SIFT,VOIT,REM,SEP,STD,SUG,HOA,JRO,LOO,MAR,NFT,SWF2,SWFL,UNFR,VALT]
+
+missing from pnw(?): SWFL
+
+------------------------
+UW:
+*/SHUK.UW.2019.* */MBW.UW.2019.* */HOOD.UW.2019.* */TDH.UW.2019.* */VBE.UW.2019.* */VFP.UW.2019.* */VLL.UW.2019.* */AUG.UW.2019.* */BEND.UW.2019.* */MOON.UW.2019.* */NCO.UW.2019.* */NN19.UW.2019.* */NN21.UW.2019.* */FMW.UW.2019.* */LON.UW.2019.* */RCM.UW.2019.* */RCS.UW.2019.* */RER.UW.2019.* */RVC.UW.2019.* */STAR.UW.2019.* */CDF.UW.2019.* */EDM.UW.2019.* */ELK.UW.2019.* */FL2.UW.2019.* */HSR.UW.2019.* */JUN.UW.2019.* */LVP.UW.2019.* */SHW.UW.2019.*
+
+list form: [SHUK,MBW,HOOD,TDH,VBE,VFP,VLL,AUG,BEND,MOON,NCO,NN19,NN21,FMW,LON,RCM,RCS,RER,RVC,STAR,CDF,EDM,ELK,FL2,HSR,JUN,LVP,SHW]
+
+note about LVP: must end sometime 2015 despite what IRIS says
+
+------------------------
+UO:*/JESE.UO.2019.* */PINE.UO.2019.* */TOOM.UO.2019.*
+
+list form: [JESE,PINE,TOOM]

@@ -3,6 +3,9 @@
 ## copy this file to working dir. and edit       ##
 ###################################################
 
+## if running multiple scripts with different parameters, make a         ##
+## copy of this and rename (change in script as well) for each script    ##
+
 # =================================================
 # GENERAL
 # =================================================
@@ -11,10 +14,11 @@
 homedir: /home/smocz/expand_redpy_new_files/
 #directory to get downloaded waveforms from
 datadir: /fd1/wave_data/ 
+#where to read catalogs from
+readdir: /home/smocz/expand_redpy/csv_catalogs/
 #year to run and find events from
 year: 2019
 #number in this list (0-4): volc_list_names = ['Baker','Hood','Newberry','Rainier','St_Helens'] the volcano you want to run is on.
-#set on each individual script if running multiple volcanoes at the same time in the same directory
 vv: 3
 
 # =================================================
@@ -27,7 +31,35 @@ fqmax: 10
 #sampling rate to resample to
 fs: 40
 #channel to look at
-chan: *HZ
+chan: '*HZ'
+
+# =================================================
+# TEMPLATE PARAMETERS
+# =================================================
+
+#time in seconds before REDPy time to start template window - small because initial start time should be fairly accurate
+tb: 3
+#time in seconds after REDPy time to start template window - 2 times the radius in km around volcanoes for speed of ~1km/s
+ta: 70
+#breaking up matrix, if having keyerror for nbucket, just set it to 1
+nbucket: 1 
+#filt_order
+f_o: 4
+#process_length, time in s to chunk data into to look over
+p_len: 200
+#snr threshold, float (must be greater than or equal to this snr)
+snr_t: 7.
+#sta/lta threshold to turn the signal trigger on
+thr_on: 1.35
+#sta/lta threshold to turn the signal trigger off
+thr_off: 0.75
+#length of short window for signal detection in seconds, float
+nsta: 5.
+#length of long window for signal detection in seconds, float
+nlta: 10.
+#percentile for SNR
+pr: 98
+
 
 # =================================================
 # DETECT PARAMETERS

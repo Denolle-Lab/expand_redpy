@@ -19,7 +19,7 @@ readdir: /home/smocz/expand_redpy/csv_catalogs/
 #year to run and find events from
 year: 2019
 #number in this list (0-4): volc_list_names = ['Baker','Hood','Newberry','Rainier','St_Helens'] the volcano you want to run is on.
-vv: 0
+vv: 4
 
 # =================================================
 # METADATA PARAMETERS

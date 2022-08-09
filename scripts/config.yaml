@@ -19,7 +19,25 @@ readdir: /home/smocz/expand_redpy/csv_catalogs/
 #year to run and find events from
 year: 2019
 #number in this list (0-4): volc_list_names = ['Baker','Hood','Newberry','Rainier','St_Helens'] the volcano you want to run is on.
-vv: 3
+vv: 0
+
+# =================================================
+# METADATA PARAMETERS
+# =================================================
+
+#latitude and longitude of volcanoes (order does NOT matter)
+volc_lat_lon:
+    Mt_Rainier: [46.8528857, -121.7603744]
+    Mt_Baker: [48.7773426,  -121.8132008]
+    Mt_St_Helens: [46.1912, -122.1944]
+    Mt_Hood: [45.373221, -121.696509]
+    Newberry: [43.7220653, -121.2344654]
+#volcano list (order does NOT matter)
+volcano_list: ['Mt_Rainier','Mt_Baker','Mt_St_Helens','Mt_Hood','Newberry']
+#radius in deg (0.450 ~= 50km) (0.27 ~= 30km) (0.315 ~= 35km)
+rad: '0.314'
+#path to and name of volcano metadata file
+csv_name: '/home/smocz/expand_redpy/csv_catalogs/Volcano_Metadata.csv'
 
 # =================================================
 # STREAM FILTERING
@@ -38,7 +56,7 @@ chan: '*HZ'
 # =================================================
 
 #time in seconds before REDPy time to start template window - small because initial start time should be fairly accurate
-tb: 3
+tb: 8
 #time in seconds after REDPy time to start template window - 2 times the radius in km around volcanoes for speed of ~1km/s
 ta: 70
 #breaking up matrix, if having keyerror for nbucket, just set it to 1
@@ -59,7 +77,6 @@ nsta: 5.
 nlta: 10.
 #percentile for SNR
 pr: 98
-
 
 # =================================================
 # DETECT PARAMETERS

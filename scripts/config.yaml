@@ -14,11 +14,13 @@
 homedir: /home/smocz/expand_redpy_new_files/
 #directory to get downloaded waveforms from
 datadir: /fd1/wave_data/ 
-#where to read catalogs from
+#directory to read catalogs from
 readdir: /home/smocz/expand_redpy/csv_catalogs/
 #year to run and find events from
 year: 2019
-#number in this list (0-4): volc_list_names = ['Baker','Hood','Newberry','Rainier','St_Helens'] the volcano you want to run is on.
+#list of volcano names in order (order DOES matter)
+volc_list_names: ['Baker','Hood','Newberry','Rainier','St_Helens']
+#number in volc_list_names (0-4) that the volcano you want to run is on.
 vv: 0
 
 # =================================================
@@ -27,13 +29,11 @@ vv: 0
 
 #latitude and longitude of volcanoes (order does NOT matter)
 volc_lat_lon:
-    Mt_Rainier: [46.8528857, -121.7603744]
-    Mt_Baker: [48.7773426,  -121.8132008]
-    Mt_St_Helens: [46.1912, -122.1944]
-    Mt_Hood: [45.373221, -121.696509]
+    Rainier: [46.8528857, -121.7603744]
+    Baker: [48.7773426,  -121.8132008]
+    St_Helens: [46.1912, -122.1944]
+    Hood: [45.373221, -121.696509]
     Newberry: [43.7220653, -121.2344654]
-#volcano list (order does NOT matter)
-volcano_list: ['Mt_Rainier','Mt_Baker','Mt_St_Helens','Mt_Hood','Newberry']
 #radius in deg (0.450 ~= 50km) (0.27 ~= 30km) (0.315 ~= 35km)
 rad: '0.315'
 #path to and name of volcano metadata file
@@ -102,3 +102,10 @@ i_b_d: True
 overlap: calculate
 #metric, metric to sort party of detections by
 metric: avg_cor
+
+# =================================================
+# FIND EVENT PARAMETERS
+# =================================================
+
+#time in seconds before and after a detect time to check for overlap with other detect times
+wi: 1

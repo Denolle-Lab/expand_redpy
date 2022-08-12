@@ -115,11 +115,11 @@ volc_md['netsta'] = volc_md['Network'].astype(str)+'.'+volc_md['Station'].astype
 # In[ ]:
 
 
-Baker_sta = volc_md[volc_md['Volcano_Name'] == 'Mt_Baker']['netsta'].values.tolist()
-Hood_sta = volc_md[volc_md['Volcano_Name'] == 'Mt_Hood']['netsta'].values.tolist() 
-St_Helens_sta = volc_md[volc_md['Volcano_Name'] == 'Mt_St_Helens']['netsta'].values.tolist()
+Baker_sta = volc_md[volc_md['Volcano_Name'] == 'Baker']['netsta'].values.tolist()
+Hood_sta = volc_md[volc_md['Volcano_Name'] == 'Hood']['netsta'].values.tolist() 
+St_Helens_sta = volc_md[volc_md['Volcano_Name'] == 'St_Helens']['netsta'].values.tolist()
 Newberry_sta = volc_md[volc_md['Volcano_Name'] == 'Newberry']['netsta'].values.tolist() 
-Rainier_sta = volc_md[volc_md['Volcano_Name'] == 'Mt_Rainier']['netsta'].values.tolist()
+Rainier_sta = volc_md[volc_md['Volcano_Name'] == 'Rainier']['netsta'].values.tolist()
 
 
 # Create Lists of Volcano Information
@@ -153,12 +153,12 @@ def update_data(data, streamdata, ibucket):
 
 # In[ ]:
 
-
 # changed most (all?) .stats.station to sta
 
 # for vv,v in enumerate(volc_sta): #vv is the number in the list, v is the station list for current volcano
 v = volc_sta[vv]
 clid = volc_list[vv]['Clustered'].values.tolist() #find the largest cluster ID for a volcano to set range
+print(len(v))
 for s in range(0,len(v)): #loop through stations
     net, sta =  v[s].split('.') #add specific network per station
     t0 = time() #record time

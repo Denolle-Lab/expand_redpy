@@ -159,7 +159,8 @@ def update_data(data, streamdata, ibucket):
 v = volc_sta[vv]
 clid = volc_list[vv]['Clustered'].values.tolist() #find the largest cluster ID for a volcano to set range
 print(len(v))
-for s in range(7,len(v)): #loop through stations
+for s in range(20,len(v)): #loop through stations
+    print(v[s])
     net, sta =  v[s].split('.') #add specific network per station
     t0 = time() #record time
     #Create Dictionary data and DataFrame meta

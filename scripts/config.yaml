@@ -109,3 +109,5 @@ metric: avg_cor
 
 #time in seconds before and after a detect time to check for overlap with other detect times
 wi: 1
+#minimum number of stations with detections needed to make an event
+minsta: 4

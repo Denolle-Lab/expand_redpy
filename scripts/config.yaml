@@ -111,3 +111,10 @@ metric: avg_cor
 wi: 1
 #minimum number of stations with detections needed to make an event
 minsta: 4
+
+# =================================================
+# FIND EVENT PARAMETERS
+# =================================================
+
+#how rough or smooth the envelope is
+smooth_length: 1

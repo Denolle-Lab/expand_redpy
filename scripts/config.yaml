@@ -18,6 +18,8 @@ datadir: /fd1/wave_data/
 readdir: /home/smocz/expand_redpy/csv_catalogs/
 #year to run and find events from
 year: 2019
+#list of years to find events from
+years: [2002,2003,2004,2005,2006]
 #list of volcano names in order (order DOES matter)
 volc_list_names: ['Baker','Hood','Newberry','Rainier','St_Helens']
 #number in volc_list_names (0-4) that the volcano you want to run is on.

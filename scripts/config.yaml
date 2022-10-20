@@ -50,8 +50,23 @@ fqmin: 1
 fqmax: 10
 #sampling rate to resample to
 fs: 40
-#channel to look at
+#channel to look at, NEEDS at least last two letters (ex: *HZ or EHZ, NOT *Z)
 chan: '*HZ'
+
+# =================================================
+# GRID SEARCH PARAMETERS
+# =================================================
+
+#length of x axis for location in meters
+grid_length: 7e4
+#length of x axis for location in meters
+grid_height: 7e4
+#
+step: 1000
+#
+t_step: 1
+#
+vs: 1000
 
 # =================================================
 # TEMPLATE PARAMETERS

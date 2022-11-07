@@ -3,7 +3,7 @@
 
 # This is based on Francesca's picktime and grid search code - see her github for alt version
 
-# In[1]:
+# In[ ]:
 
 
 import yaml
@@ -24,7 +24,7 @@ from geopy import distance
 
 # read config file for parameters
 
-# In[2]:
+# In[ ]:
 
 
 with open('/home/smocz/expand_redpy/scripts/config.yaml') as file:
@@ -52,7 +52,7 @@ vv = config['vv']
 
 # Read REDpy Catalogs and Volcano Metadata File
 
-# In[3]:
+# In[ ]:
 
 
 Baker = pd.read_csv(readdir+'Baker_catalog.csv')
@@ -82,7 +82,7 @@ volc_md = pd.read_csv(readdir+'Volcano_Metadata.csv')
 
 # Associate networks and stations
 
-# In[4]:
+# In[ ]:
 
 
 volc_md['netsta'] = volc_md['Network'].astype(str)+'.'+volc_md['Station'].astype(str)
@@ -90,7 +90,7 @@ volc_md['netsta'] = volc_md['Network'].astype(str)+'.'+volc_md['Station'].astype
 
 # Create Lists of Stations for Each Volcano Using volc_md
 
-# In[5]:
+# In[ ]:
 
 
 Baker_sta = volc_md[volc_md['Volcano_Name'] == 'Baker']['netsta'].values.tolist()
@@ -102,7 +102,7 @@ Rainier_sta = volc_md[volc_md['Volcano_Name'] == 'Rainier']['netsta'].values.tol
 
 # Create Lists of Volcano Information
 
-# In[6]:
+# In[ ]:
 
 
 volc_list = [Baker,Hood,Newberry,Rainier,St_Helens] # list of dataframes for each volcano
@@ -112,7 +112,7 @@ volc_sta = [Baker_sta,Hood_sta,Newberry_sta,Rainier_sta,St_Helens_sta] # lists o
 
 # Define pick_time
 
-# In[7]:
+# In[ ]:
 
 
 def pick_time(ref_env, data_env_dict, st): 
@@ -133,7 +133,7 @@ def get_cmap(n, name='viridis'): #hsv
 
 # Define location
 
-# In[11]:
+# In[ ]:
 
 
 # define function to predict synthetic arrival times
@@ -184,7 +184,7 @@ def error_diameter(new_array):
 
 # Find picktimes and location
 
-# In[9]:
+# In[ ]:
 
 
 #finding bottom left corner of grid map
@@ -194,7 +194,7 @@ print(volc_lat_lon[volc_list_names[vv]][0], volc_lat_lon[volc_list_names[vv]][1]
 print(lat_start,lon_start)
 
 
-# In[18]:
+# In[ ]:
 
 
 # for vv,v in enumerate(volc_sta): #vv is the number in the list, v is the station list for current volcano
@@ -213,7 +213,7 @@ for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for t
     temps_s = {} #empty dictionary that will be filled with the templates for this cluster
     #indexes are the same
     print('------')
-    print("cluster:",cl)
+    print("cluster:",str(cl).zfill(cllen))
     for s in range(0,len(v)): #loop through stations
         net, sta =  v[s].split('.') #add specific network per station
 #         print(f'Volcano_{volc_list_names[vv]}_Network_{net}_Station_{sta}')
@@ -224,9 +224,13 @@ for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for t
 ########################################################################
 
         # try to read the .tgz file and get the template for this cluster
-        T = Tribe().read(*glob(f'{homedir}templates/Volcano_{volc_list_names[vv]}_Network_{net}_Station_{sta}_Channel_*.tgz'))
+        try:
+            T = Tribe().read(*glob(f'{homedir}templates/Volcano_{volc_list_names[vv]}_Network_{net}_Station_{sta}_Channel_*.tgz'))
+        except:
+            print(f'{net}.{sta} tgz does not exist')
+            continue
         for t in T: #for each template in the Tribe
-            if t.name.endswith(str(cl).zfill(len(str(cl)))): #if the template name endswith this cluster
+            if t.name.endswith(str(cl).zfill(cllen)): #if the template name endswith this cluster
                 temps_s[f'{net.lower()}.{t.name}']=t #save to dictionary and include network name for overlapping station names
                 break
 #         except:
@@ -234,6 +238,7 @@ for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for t
 #             pass
 #     print(temps_s.keys())
     if len(temps_s) < minsta:
+        print('not enough stations with data for this cluster')
         continue
     data_env_dict = {}
     for t in temps_s: #for each saved template (aka each template for this cluster and volc that exists)
@@ -320,7 +325,7 @@ for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for t
     lat_start = volc_lat_lon[volc_list_names[vv]][0] - (grid_length/222000) #volcano lat minus half of grid length in decimal lat long
     lon_start = volc_lat_lon[volc_list_names[vv]][1] - (grid_height/222000) #volcano long minus half of grid height in decimal lat long
 #     print(volc_lat_lon[volc_list_names[vv]][0], volc_lat_lon[volc_list_names[vv]][1])
-    print('start lat and lon',lat_start,lon_start)
+#     print('start lat and lon',lat_start,lon_start)
         
     #station lat lons to x y
     sta_x = []

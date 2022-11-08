@@ -206,7 +206,7 @@ zz = chan[-2:].lower() #the last two letters of channel names (essentially the l
 
 with open(homedir+f'/locations/{volc_list_names[vv]}_Template_Locations.csv', 'w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['Volcano_Name','netsta','Cluster_ID','Latitude','Longitude',])
+    writer.writerow(['Volcano_Name','netsta','Picktimes','Cluster_ID','Latitude','Longitude',])
     file.close()
 
 for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for testing #for each cluster
@@ -362,7 +362,7 @@ for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for t
 #     fig.colorbar(im)
 #     plt.show()
     
-    row = [volc_list_names[vv],' '.join(netsta_names),cl,loc_lat,loc_lon]
+    row = [volc_list_names[vv],' '.join(netsta_names),' '.join([str(i) for i in arrivals]),cl,loc_lat,loc_lon]
     with open(homedir+f'/locations/{volc_list_names[vv]}_Template_Locations.csv', 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(row)

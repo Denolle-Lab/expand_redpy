@@ -23,7 +23,7 @@ years: [2002,2003,2004,2005,2006]
 #list of volcano names in order (order DOES matter)
 volc_list_names: ['Baker','Hood','Newberry','Rainier','St_Helens']
 #number in volc_list_names (0-4) that the volcano you want to run is on.
-vv: 3
+vv: 4
 
 # =================================================
 # METADATA PARAMETERS
@@ -61,11 +61,11 @@ chan: '*HZ'
 grid_length: 7e4
 #length of x axis for location in meters
 grid_height: 7e4
-#
+#grid resolution in meters
 step: 1000
 #
 t_step: 1
-#
+#velosity in meters/second
 vs: 1000
 
 # =================================================

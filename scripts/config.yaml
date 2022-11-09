@@ -62,11 +62,15 @@ grid_length: 7e4
 #length of x axis for location in meters
 grid_height: 7e4
 #grid resolution in meters
-step: 1000
+step: 250
 #
 t_step: 1
-#velosity in meters/second
-vs: 1000
+#minimum velosity to try in m/s
+vs_min: 1000
+#maximum velosity to try in m/s
+vs_max: 5000
+#interval of intermediate velsities in m/s
+vs_step: 4000
 
 # =================================================
 # TEMPLATE PARAMETERS

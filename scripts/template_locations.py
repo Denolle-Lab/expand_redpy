@@ -10,6 +10,7 @@ import yaml
 import csv
 import eqcorrscan
 from eqcorrscan import Tribe
+from time import time
 import obspy
 from obspy import UTCDateTime, Trace
 import pandas as pd
@@ -204,16 +205,17 @@ cllen = len(str(clid[-1])) #length of the largest cluster ID, used for zfill
 zz = chan[-2:].lower() #the last two letters of channel names (essentially the letters in chan)
 #make csv?
 
-with open(homedir+f'/locations/{volc_list_names[vv]}_Template_Locations.csv', 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(['Volcano_Name','netsta','Picktimes','Cluster_ID','Latitude','Longitude',])
-    file.close()
+#with open(homedir+f'/locations/{volc_list_names[vv]}_Template_Locations.csv', 'w', newline='') as file:
+ #   writer = csv.writer(file)
+  #  writer.writerow(['Volcano_Name','netsta','Picktimes','Cluster_ID','Latitude','Longitude',])
+   # file.close()
 
-for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for testing #for each cluster
+for cl in range(3000, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for testing #for each cluster
     temps_s = {} #empty dictionary that will be filled with the templates for this cluster
     #indexes are the same
     print('------')
     print("cluster:",str(cl).zfill(cllen))
+    stopwatch0=time()
     for s in range(0,len(v)): #loop through stations
         net, sta =  v[s].split('.') #add specific network per station
 #         print(f'Volcano_{volc_list_names[vv]}_Network_{net}_Station_{sta}')
@@ -371,7 +373,8 @@ for cl in range(0, clid[-1]+1):#normally range(0,clid[-1]+1), range(13,14) for t
     #write into csv relative picktimes in seconds after first_sta, probably list separated by 
     #spaces, like how stations are saved in events, make sure index is same for the template 
     #name and picktime
-
+    stopwatch1=time()
+    print(f'{stopwatch1-stopwatch0} s for this cluster')
 
 # In[ ]:
 

@@ -156,8 +156,8 @@ for year in years: #for each year
             if match_list.count(2) >= minsta: #if at least 4 matches equal 2:
     #         if match==2 and match0==2 and match1==2 and match2==2:
                 print('saving...')
-                check = pd.read_csv(homedir+'events/'+volc+'_'+str(year)+'_events.csv') #read the csv we made
-                checktimes = check[check['Cluster_ID']==int(cl)]['Detection_Time'].values.tolist() 
+                check = pd.read_csv(csv_name) #read the csv we made
+                checktimes = check[check['Cluster_ID']==int(cl)]['Earliest_Detection_Time'].values.tolist() 
                 #find the datetimes that have already been saved
                 checking = 0
                 for tt,t in enumerate(checktimes):

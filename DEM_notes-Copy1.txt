@@ -1,0 +1,27 @@
+http://gis.ess.washington.edu/data/raster/tenmeter/byquad/yakima/index.html
+
+1826 = Mount Rainier West
+1827 = Mount Rainier East
+
+files are .dem
+need to be converted to .tiff
+Francesca has code for that, I just used ArcGIS
+
+ArcGIS steps:
+
+input all dem files you want to merge
+
+MERGING STEPS:
+1. go to Analysis > Tools > Toolbox > Raster > Raster Dataset > Mosaic to New Raster
+2. select all the dem files you want to merge under "input rasters"
+3. select output location and under "raster dataset name with extension" put in name.tif
+4. chose spatial reference, can select one of the imported dems to use their spatial reference (what I did)
+5. select pixel type (I chose 16 bit signed because that's what was in the tutorial I used)
+6. other defaults are fine, click "run"
+7. now you have 1 tif file that is a merge of all the ones you wanted to merge.
+
+TO GET A HILLSHADE VERSION (can be easier to make out elevation):
+1. got to Analysis > Raster Functions > Surface > Hillshade
+2. select the merged tif file
+3. click "run"
+4. now you have a tif file of the hillshade

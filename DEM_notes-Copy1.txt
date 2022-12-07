@@ -1,4 +1,4 @@
-http://gis.ess.washington.edu/data/raster/tenmeter/byquad/yakima/index.html
+http://gis.ess.washington.edu/data/raster/tenmeter/byquad/index.html
 
 1826 = Mount Rainier West
 1827 = Mount Rainier East

@@ -9,6 +9,9 @@ We look at the REDPy <a href="https://github.com/ahotovec/REDPy">(Repeating Eart
 
 We use eqcorrscan <a href="https://www.dropbox.com/s/rscu5odvn1bbr2s/Chamberlain18.pdf?dl=0">(Chamberlain et al, 2018)</a>  and the Fast Matched Filter <a href="https://doi.org/10.1785/0220170181">(Beauce and Frank, 2018)</a> to run template matching on GPUs.
 
+<h2>Methods/Process</h2>
+<img src="methods.jpg" alt="Methods Flowchart">
+
 <h2>Understanding the Repo</h2>
 <table>
   <tr>

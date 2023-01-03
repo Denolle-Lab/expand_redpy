@@ -34,7 +34,7 @@ client = Client('IRIS')
 # In[3]:
 
 
-with open('/home/smocz/expand_redpy/scripts/config_Baker.yaml') as file:
+with open('/home/smocz/expand_redpy/scripts/config_Rainier.yaml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 # Template metadata
 fqmin = config['fqmin']

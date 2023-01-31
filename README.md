@@ -68,7 +68,7 @@ We select stations with make_volcano_metadata.ipynb, generate templates in make_
   <tr>
     <td>eq_clustering.ipynb</td>
     <td>notebooks/</td>
-    <td>Clustering templates with EQcorrscan's cluster() function. In progress.</td>
+    <td>Clustering templates with EQcorrscan's cluster() function. This method was found to be ineffective and new methods are being tested.</td>
   </tr>
   <tr>
     <td>templates_to_h5.ipynb</td>

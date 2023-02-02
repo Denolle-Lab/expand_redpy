@@ -76,6 +76,11 @@ We select stations with make_volcano_metadata.ipynb, generate templates in make_
     <td>Creates h5 versions of templates. In progress. May not be used in the future.</td>
   </tr>
   <tr>
+    <td>specufex_testing.ipynb</td>
+    <td>notebooks/</td>
+    <td>Testing <a href="https://github.com/Specufex/specufex">specufex</a> as an option for clustering of templates.</td>
+  </tr>
+  <tr>
     <td>config.yaml</td>
     <td>scripts/</td>
     <td>Config file to be able to change parameters on mulitple notebooks at the same time. Contains descriptions and values of important variables.</td>

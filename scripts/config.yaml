@@ -141,3 +141,26 @@ smooth_length: 1
 
 #time in seconds before and after a redpy time that a detection of the same cluster cannot fall into because it will be considered the same event
 rpwi: 15
+
+# =================================================
+# TEMPLATE CLUSTERING PARAMETERS
+# =================================================
+
+#length of trimmed window in seconds
+winlen: 40
+#number per segment, affects time resolution (smaller == more resolution)
+nperseg: 64
+#number to divide nperseg by, to find overlap (currently noverlap = nperseg/dnoverlap)
+dnoverlap: 4
+#
+nfft: 1024
+#number of clusters to group in kmeans clustering
+K: 6
+#number of batches to run through NMF
+batches_nmf: 100000
+#size of batches to run through NMF
+batch_size: 1
+#number of batches to run through HMM
+batches_hmm: 5000
+#number of states to run through HMM
+num_states: 8

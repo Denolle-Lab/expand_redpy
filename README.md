@@ -76,14 +76,29 @@ We select stations with make_volcano_metadata.ipynb, generate templates in make_
     <td>Creates h5 versions of templates. In progress. May not be used in the future.</td>
   </tr>
   <tr>
-    <td>specufex_testing.ipynb</td>
+    <td>specufex_template_grouping.ipynb</td>
     <td>notebooks/</td>
-    <td>Testing <a href="https://github.com/Specufex/specufex">specufex</a> as an option for clustering of templates.</td>
+    <td>Using <a href="https://github.com/Specufex/specufex">specufex</a> as an option for clustering of templates to identify event types (icequake, rockslide, etc.)</td>
   </tr>
   <tr>
     <td>config.yaml</td>
     <td>scripts/</td>
     <td>Config file to be able to change parameters on mulitple notebooks at the same time. Contains descriptions and values of important variables.</td>
+  </tr>
+  <tr>
+    <td>nmf_hmm_loop.py</td>
+    <td>scripts/</td>
+    <td>Script to find nmf and hmm data from specufex, save to h5 file for later use, allowing not having to run nmf and hmm each time.</td>
+  </tr>
+  <tr>
+    <td>specufex_analysis.py</td>
+    <td>scripts/</td>
+    <td>Script to find confidence intervals for various Kmeans groupings from specufex fingerprints.</td>
+  </tr>
+  <tr>
+    <td>specufex_template_grouping.py</td>
+    <td>scripts/</td>
+    <td>Script of notebook specufex_template_grouping.ipynb for running.</td>
   </tr>
   <tr>
     <td>find_events.py, template_locations_.py</td>
@@ -134,5 +149,30 @@ We select stations with make_volcano_metadata.ipynb, generate templates in make_
     <td>reading_templates.ipynb</td>
     <td>notebooks/tutorials/</td>
     <td>Tutorial notebook for reading .tgz files and working with templates.</td>
+  </tr>
+  <tr>
+    <td>download_streams.ipynb</td>
+    <td>notebooks/tutorials/</td>
+    <td>To save streams to siletzia for faster calling on run_detections scripts. No longer used, downloading data took up too much storage</td>
+  </tr>
+  <tr>
+    <td>specufex_on_redpy_data.ipynb</td>
+    <td>notebooks/tutorials/</td>
+    <td>To use specufex on redpy templates to group them.</td>
+  </tr>
+  <tr>
+    <td>Volcano_Rainier_Network_UW_Station_RCM_Channel_HHZ.tgz</td>
+    <td>notebooks/tutorials/</td>
+    <td>tgz file used in specufex_on_redpy_data.ipynb</td>
+  </tr>
+  <tr>
+    <td>specufex_data.h5</td>
+    <td>notebooks/tutorials/</td>
+    <td>h5 file with waveforms and template names, used in specufex_on_redpy_data.ipynb</td>
+  </tr>
+  <tr>
+    <td>specufex_data_full_tgz.h5</td>
+    <td>notebooks/tutorials/</td>
+    <td>h5 file with waveforms, template names, Vs, hmm_EB, and fingerprints used in specufex_on_redpy_data.ipynb</td>
   </tr>
 </table>

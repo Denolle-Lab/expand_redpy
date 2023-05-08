@@ -1,0 +1,139 @@
+###################################################
+## CONFIGURATION FILE                            ##
+## copy this file to working dir. and edit       ##
+###################################################
+
+## if running multiple scripts with different parameters, make a         ##
+## copy of this and rename (change in script as well) for each script    ##
+
+# =================================================
+# GENERAL
+# =================================================
+
+#home directory or directory to save new files to (outside of github repo)
+homedir: /home/smocz/expand_redpy_new_files/
+#directory to get downloaded waveforms from
+datadir: /fd1/wave_data/ 
+#directory to read catalogs from
+readdir: /home/smocz/expand_redpy/csv_catalogs/
+#year to run and find events from
+year: 2019
+#list of years to find events from
+years: [2014,2015,2016,2017,2018,2019,2020,2021]
+#list of volcano names in order (order DOES matter)
+volc_list_names: ['Baker','Hood','Newberry','Rainier','St_Helens']
+#number in volc_list_names (0-4) that the volcano you want to run is on.
+vv: 4
+
+# =================================================
+# METADATA PARAMETERS
+# =================================================
+
+#latitude and longitude of volcanoes (order does NOT matter)
+volc_lat_lon:
+    Rainier: [46.8528857, -121.7603744]
+    Baker: [48.7773426,  -121.8132008]
+    St_Helens: [46.1912, -122.1944]
+    Hood: [45.373221, -121.696509]
+    Newberry: [43.7220653, -121.2344654]
+#radius in deg (0.450 ~= 50km) (0.27 ~= 30km) (0.315 ~= 35km)
+rad: '0.315'
+#path to and name of volcano metadata file
+csv_name: '/home/smocz/expand_redpy/csv_catalogs/Volcano_Metadata.csv'
+
+# =================================================
+# STREAM FILTERING
+# =================================================
+
+#min and max for bandpass filter
+fqmin: 1 
+fqmax: 10
+#sampling rate to resample to
+fs: 40
+#channel to look at, NEEDS at least last two letters (ex: *HZ or EHZ, NOT *Z)
+chan: '*HZ'
+
+# =================================================
+# GRID SEARCH PARAMETERS
+# =================================================
+
+#length of x axis for location in meters
+grid_length: 7e4
+#length of x axis for location in meters
+grid_height: 7e4
+#
+step: 1000
+#
+t_step: 1
+#
+vs: 1000
+
+# =================================================
+# TEMPLATE PARAMETERS
+# =================================================
+
+#time in seconds before REDPy time to start template window - small because initial start time should be fairly accurate
+tb: 8
+#time in seconds after REDPy time to start template window - 2 times the radius in km around volcanoes for speed of ~1km/s
+ta: 70
+#breaking up matrix, if having keyerror for nbucket, just set it to 1
+nbucket: 1 
+#filt_order
+f_o: 4
+#process_length, time in s to chunk data into to look over
+p_len: 200
+#snr threshold, float (must be greater than or equal to this snr)
+snr_t: 8.
+#sta/lta threshold to turn the signal trigger on
+thr_on: 1.35
+#sta/lta threshold to turn the signal trigger off
+thr_off: 0.75
+#length of short window for signal detection in seconds, float
+nsta: 5.
+#length of long window for signal detection in seconds, float
+nlta: 10.
+#percentile for SNR
+pr: 98
+
+# =================================================
+# DETECT PARAMETERS
+# =================================================
+
+#prepick length
+prepick_len: 0.3
+#trig_int, minimum separation between detections in seconds
+trig_int: 6
+#threshold_type, affects how thr is formatted, absolute recommended 
+thr_t: absolute
+#threshold, minimum cross correlation value to count as a detection
+thr: 0.6
+#xcorr_func, cross correlation function, fmf recommended
+xfunc: fmf
+#plot, should a plot be shown for each detection
+plot: False
+#return_stream, does or does not output the downloaded stream
+r_st: False
+#ignore_bad_data, whether to stop at (False) or skip over (True) missing/too many zeroes data
+i_b_d: True
+#overlap, the overlap in testing for cross correlation or detections, calculate is recommended
+overlap: calculate
+#metric, metric to sort party of detections by
+metric: avg_cor
+#number of cores to run detect on
+cores: 2
+
+# =================================================
+# FIND EVENT PARAMETERS
+# =================================================
+
+#time in seconds before and after a detect time to check for overlap with other detect times
+wi: 1
+#minimum number of stations with detections needed to make an event
+minsta: 4
+
+# =================================================
+# FIND EVENT PARAMETERS
+# =================================================
+
+#how rough or smooth the envelope is
+smooth_length: 1

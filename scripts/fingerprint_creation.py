@@ -134,6 +134,6 @@ fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
 
 with h5py.File(f"{savedir}{h5name}", "w") as f:
     f.create_dataset("waveforms", data=waveforms)
-    f.create_dataset("group_id", data=group_id_list)
-    f.create_dataset("template_name", data=name_list)
+    f.create_dataset("group_id", data=group_id)
+    f.create_dataset("template_name", data=template_name)
     f.create_dataset("fingerprints", data=fingerprints)

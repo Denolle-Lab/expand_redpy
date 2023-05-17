@@ -181,22 +181,22 @@ for i in t:
     t.set_postfix_str(f"Patterns: {nmf.num_pat}")
     break
     
-# #get activation matrix (Vs) from nmf
-# Vs = nmf.transform(tdf["stft"].values)
+#get activation matrix (Vs) from nmf
+Vs = nmf.transform(tdf["stft"].values)
 
-# hmm = BayesianHMM(nmf.num_pat, nmf.gain, num_state=num_states, Neff=50000)
+hmm = BayesianHMM(nmf.num_pat, nmf.gain, num_state=num_states, Neff=50000)
 
-# t = trange(batches_hmm, desc="HMM fit progress ", leave=True)
-# for i in t:
-#     idx = np.random.randint(Vs.shape[0], size=1)
-#     hmm.fit(Vs[idx])
+t = trange(batches_hmm, desc="HMM fit progress ", leave=True)
+for i in t:
+    idx = np.random.randint(Vs.shape[0], size=1)
+    hmm.fit(Vs[idx])
     
-# fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
+fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
 
-# ##########################################################################################
+##########################################################################################
 
-# with h5py.File(f"{savedir}new_{h5name}", "w") as f:
-#     f.create_dataset("waveforms", data=waveforms_n)
-#     f.create_dataset("group_id", data=group_id)
-#     f.create_dataset("template_name", data=template_name)
-#     f.create_dataset("fingerprints", data=fingerprints)
+with h5py.File(f"{savedir}new_{h5name}", "w") as f:
+    f.create_dataset("waveforms", data=waveforms_n)
+    f.create_dataset("group_id", data=group_id)
+    f.create_dataset("template_name", data=template_name)
+    f.create_dataset("fingerprints", data=fingerprints)

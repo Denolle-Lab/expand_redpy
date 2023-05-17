@@ -1,7 +1,7 @@
 #imports
 from eqcorrscan import Tribe #reading tgz files with templates
 import obspy
-from obspy import Stream
+from obspy import Stream, Trace
 import csv #for reading and saving data
 import numpy as np
 import pandas as pd
@@ -60,15 +60,75 @@ batches_hmm = config['batches_hmm']
 savedir = '/home/smocz/expand_redpy_new_files/h5/' #directory to save h5 file in
 h5name = 'curated_set.h5'
 
-with h5py.File(f"{savedir}{h5name}", "r") as f:
-    waveforms = f["waveforms"][()]
-    template_name = f["template_name"].asstr()[()]
-    group_id = f["group_id"][()]
+##########################################################################################
+
+# create window with max possible sum(abs(amplitudes))
+# goal is to align stream windows and provide shorter windows without as much noise
+def maxwindow(st,winlen,fs): #provide stream object (one trace each), window length in s, and sampling rate
+    fs_ = st[0].stats.sampling_rate #if sampling rate is in metadata, this can read it
+    if fs_ > 1.: fs=fs_
+    else: st[0].stats.sampling_rate = fs
+    stt = st[0].stats.starttime #if starttime is in metadata, this can read it
+
+    print(len(st[0]))
+    print(fs)
+    numwindows = round(len(st[0])/fs)-winlen+1 #how many windows will be cycled (+1 is for range)
+    print('number of windows:',numwindows-1)
+
+    sum_list = [] #list of sum of abs value of amplitudes for each window
+    for i in range(0,numwindows): #i is index of windows
+        tw = st[0].copy() #create copy to avoid trimming st[0]
+        tt = tw.trim(stt+i,stt+i+winlen) #trim to a window the length of winlen
+#         print(stt+i)
+
+        amps_list = [] #list of absolute value amplitudes
+        for ii in tt: #for each amplitude/point (ii) in the trace (tt)
+            amps_list.append(abs(ii)) #append the amplitude 
+        sum_list.append(sum(amps_list)) #sum and save the amplitude for this possible window
+    
+    max_sec = sum_list.index(max(sum_list)) #find the index of the window with maximum sum(abs(amplitudes))
+    
+    print('maximum amp window index:',max_sec) #print max_sec or the # second after beginning of template that 
+    #the maximum window occurs
+    
+    final_tw = st[0].copy() #make a copy for trimming
+    
+    #adding 3s before to account for pwave/beginning of waveform
+    if max_sec-3 <= 0: #if 3s before max_sec is 0 or negative
+        sec = 0 #sec is 0
+    else: #if 3s before max_sec is >0
+        sec = max_sec-3 #sec is 3s before max_sec
+    
+    tw_trim = final_tw.trim(stt+max_sec,stt+max_sec+winlen) #use sec to trim the window corretly
+    print('Max Window:') #show the maximum window
+    tw_trim.plot();
+    
+    return(Stream(tw_trim)) #return the stream of the maximum window
+
+##########################################################################################
+
+with h5py.File(f"{savedir}{h5name}", "r") as f: #read file
+    waveforms = f["waveforms"][()] #pull in waveforms
+    template_name = f["template_name"].asstr()[()] #pull in waveform id
+    group_id = f["group_id"][()] #pull in group id
 
 print(f"{len(waveforms)} waveforms in file")
 
-tdf = pd.DataFrame({"template_name":template_name,"waveform":list(waveforms)})
+#shorten window length around max amplitude
+
+waveforms_n = []
+for wave in waveforms:
+    wave_ = Trace(wave)
+    wave_.plot();
+    new_wave = maxwindow(Stream(traces=[wave_]),winlen,fs)
+    waveforms_n.append(np.array(new_wave[0].data))
+#     break
+
+
+tdf = pd.DataFrame({"template_name":template_name,"waveform":list(waveforms_n)})
 tdf.head()
+
+##########################################################################################
 
 #calculate raw spectrograms with scipy
 fSTFT, tSTFT, STFT_raw = sp.spectrogram(
@@ -112,28 +172,31 @@ print(f"Bad spectrograms: \n{tdf.loc[bad_idx].template_name}")
 tdf = tdf.drop(bad_idx).sort_values("template_name")
 
 nmf = BayesianNonparametricNMF(np.stack(tdf["stft"].values).shape)
+print(np.stack(tdf["stft"].values).shape)
 
 t = trange(batches_nmf, desc="NMF fit progress ", leave=True)
 for i in t:
     idx = np.random.randint(len(tdf["stft"].values), size=batch_size)
     nmf.fit(tdf["stft"].iloc[idx].values)
     t.set_postfix_str(f"Patterns: {nmf.num_pat}")
+    break
     
-#get activation matrix (Vs) from nmf
-Vs = nmf.transform(tdf["stft"].values)
+# #get activation matrix (Vs) from nmf
+# Vs = nmf.transform(tdf["stft"].values)
 
-hmm = BayesianHMM(nmf.num_pat, nmf.gain, num_state=num_states, Neff=50000)
+# hmm = BayesianHMM(nmf.num_pat, nmf.gain, num_state=num_states, Neff=50000)
 
-t = trange(batches_hmm, desc="HMM fit progress ", leave=True)
-for i in t:
-    idx = np.random.randint(Vs.shape[0], size=1)
-    hmm.fit(Vs[idx])
+# t = trange(batches_hmm, desc="HMM fit progress ", leave=True)
+# for i in t:
+#     idx = np.random.randint(Vs.shape[0], size=1)
+#     hmm.fit(Vs[idx])
     
-fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
+# fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
 
+# ##########################################################################################
 
-with h5py.File(f"{savedir}{h5name}", "w") as f:
-    f.create_dataset("waveforms", data=waveforms)
-    f.create_dataset("group_id", data=group_id)
-    f.create_dataset("template_name", data=template_name)
-    f.create_dataset("fingerprints", data=fingerprints)
+# with h5py.File(f"{savedir}new_{h5name}", "w") as f:
+#     f.create_dataset("waveforms", data=waveforms_n)
+#     f.create_dataset("group_id", data=group_id)
+#     f.create_dataset("template_name", data=template_name)
+#     f.create_dataset("fingerprints", data=fingerprints)

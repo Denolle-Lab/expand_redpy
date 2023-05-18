@@ -28,7 +28,7 @@ volc = volc_list_names[vv]
 print(volc)
 filename = f'Volcano_{volc}_Network_*_Station_*_Channel_*.tgz' #name of .tgz files to glob
 homedir = config['homedir']
-print(homedir)
+# print(homedir)
 path = homedir+'templates/'
 
 winlen = config['winlen']
@@ -57,8 +57,10 @@ batch_size = config['batch_size']
 num_states = config['num_states']
 batches_hmm = config['batches_hmm']
 
-savedir = '/home/smocz/expand_redpy_new_files/h5/' #directory to save h5 file in
-h5name = 'curated_set.h5'
+savedir = config['homedir']+'h5/' #directory to save h5 file in
+h5name = 'Rainier_template_waveforms.h5'
+
+print(path+h5name)
 
 ##########################################################################################
 
@@ -70,10 +72,10 @@ def maxwindow(st,winlen,fs): #provide stream object (one trace each), window len
     else: st[0].stats.sampling_rate = fs
     stt = st[0].stats.starttime #if starttime is in metadata, this can read it
 
-    print(len(st[0]))
-    print(fs)
+#     print(len(st[0]))
+#     print(fs)
     numwindows = round(len(st[0])/fs)-winlen+1 #how many windows will be cycled (+1 is for range)
-    print('number of windows:',numwindows-1)
+#     print('number of windows:',numwindows-1)
 
     sum_list = [] #list of sum of abs value of amplitudes for each window
     for i in range(0,numwindows): #i is index of windows
@@ -88,7 +90,7 @@ def maxwindow(st,winlen,fs): #provide stream object (one trace each), window len
     
     max_sec = sum_list.index(max(sum_list)) #find the index of the window with maximum sum(abs(amplitudes))
     
-    print('maximum amp window index:',max_sec) #print max_sec or the # second after beginning of template that 
+#     print('maximum amp window index:',max_sec) #print max_sec or the # second after beginning of template that 
     #the maximum window occurs
     
     final_tw = st[0].copy() #make a copy for trimming
@@ -100,7 +102,7 @@ def maxwindow(st,winlen,fs): #provide stream object (one trace each), window len
         sec = max_sec-3 #sec is 3s before max_sec
     
     tw_trim = final_tw.trim(stt+max_sec,stt+max_sec+winlen) #use sec to trim the window corretly
-    print('Max Window:') #show the maximum window
+#     print('Max Window:') #show the maximum window
     tw_trim.plot();
     
     return(Stream(tw_trim)) #return the stream of the maximum window
@@ -110,16 +112,19 @@ def maxwindow(st,winlen,fs): #provide stream object (one trace each), window len
 with h5py.File(f"{savedir}{h5name}", "r") as f: #read file
     waveforms = f["waveforms"][()] #pull in waveforms
     template_name = f["template_name"].asstr()[()] #pull in waveform id
-    group_id = f["group_id"][()] #pull in group id
+#     group_id = f["group_id"][()] #pull in group id
 
 print(f"{len(waveforms)} waveforms in file")
 
 #shorten window length around max amplitude
 
+
 waveforms_n = []
-for wave in waveforms:
+t = trange(len(waveforms), desc="Trimming Waveforms ", leave=True)
+for i in t:
+    wave = waveforms[i]
     wave_ = Trace(wave)
-    wave_.plot();
+#     wave_.plot();
     new_wave = maxwindow(Stream(traces=[wave_]),winlen,fs)
     waveforms_n.append(np.array(new_wave[0].data))
 #     break
@@ -168,7 +173,7 @@ tdf.head()
 
 #quality check
 bad_idx = tdf["stft"][tdf["stft"].apply(lambda x: np.isnan(x).any())].index
-print(f"Bad spectrograms: \n{tdf.loc[bad_idx].template_name}")
+print(f"Bad spectrograms: \nindex {tdf.loc[bad_idx].template_name}")
 tdf = tdf.drop(bad_idx).sort_values("template_name")
 
 nmf = BayesianNonparametricNMF(np.stack(tdf["stft"].values).shape)
@@ -179,7 +184,7 @@ for i in t:
     idx = np.random.randint(len(tdf["stft"].values), size=batch_size)
     nmf.fit(tdf["stft"].iloc[idx].values)
     t.set_postfix_str(f"Patterns: {nmf.num_pat}")
-    break
+#     break
     
 #get activation matrix (Vs) from nmf
 Vs = nmf.transform(tdf["stft"].values)
@@ -195,8 +200,10 @@ fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
 
 ##########################################################################################
 
+print(f"saved to: {savedir}new_{h5name}"
+
 with h5py.File(f"{savedir}new_{h5name}", "w") as f:
-    f.create_dataset("waveforms", data=waveforms_n)
-    f.create_dataset("group_id", data=group_id)
-    f.create_dataset("template_name", data=template_name)
+    f.create_dataset("waveforms", data=np.array(tdf['waveform'].values.tolist())) #save from tdf to exclude any dropped
+#     f.create_dataset("group_id", data=group_id)
+    f.create_dataset("template_name", data=tdf['template_name'].values.tolist()) #save from tdf to exclude any dropped
     f.create_dataset("fingerprints", data=fingerprints)

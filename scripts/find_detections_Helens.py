@@ -102,72 +102,77 @@ for year in years:
         print(net,sta)
         print(volc_list_names[vv])
         try:
-            T = Tribe().read(*glob(homedir+'templates/Volcano_'+volc_list_names[vv]+'_Network_'+net+'_Station_'+sta+'_Channel_*.tgz'))
-            print(T)
-        except:
-            print('No tgz for Station')
+            open(homedir+'detections/'+volc_list_names[vv]+'_'+v[s]+'_'+str(year)+'_detections.csv')
+            print(f'detections for station {v[s]} already exist')
             continue
-#         try:
-#             obspy.read(glob(f'{datadir}{year}/{net}/{sta}/{sta}.{net}.{year}.*')[0]).select(channel=chan)
-#         except:
-#             print('No Data for Station')
-#             continue
-        if UTCDateTime(volc_md[volc_md['netsta']==v[s]]['Starttime'].values.tolist()[0]).year <= year: #if the year of the startime of this station is less than or equal to the year we are running
-            if UTCDateTime(volc_md[volc_md['netsta']==v[s]]['Endtime'].values.tolist()[0]).year >= year: #if the year of the endtime is greater than or equal to the year we are running
-                with open(homedir+'detections/'+volc_list_names[vv]+'_'+v[s]+'_'+str(year)+'_detections.csv', 'w', newline='') as file: # if both are true, create csv
-                    writer = csv.writer(file)
-                    writer.writerow(["ID", "Template_Name", "Detection_Time"])
-                    file.close()
-            else: #if endtime statement is NOT true
-                continue #skip this station for this year
-        else: #if starttime statement is NOT true
-            continue #skip this station for this year
-        for i in range(1,366): # normally 1,366
-            print('------')
-            parties = []
-            t0=time()
-#             st = obspy.read(*glob(f'{datadir}{year}/*/{sta}/{sta}.{net}.{year}.{str(i).zfill(3)}')).select(channel=chan)
-            sst = UTCDateTime(year=year,julday=i,hour=0,minute=0,second=0)
+        except:
             try:
-                st = client.get_waveforms(network=net, station=sta, channel=chan, location='*',starttime=sst, endtime=sst+86400)
+                T = Tribe().read(*glob(homedir+'templates/Volcano_'+volc_list_names[vv]+'_Network_'+net+'_Station_'+sta+'_Channel_*.tgz'))
+                print(T)
             except:
-                print(f'No data available for request. {net}.{sta} day {i}')
-                continue            
-            st.detrend(type='demean')
-            st.resample(fs)
-            st.filter(type='bandpass',freqmin=fqmin,freqmax=fqmax)
-            st.merge(fill_value=0)
-            t1=time()
-            print("it tooks %2f s to download data" %(t1-t0))
-            print(st)
-            print(str(year)+str(i).zfill(3))
-            for ii in range(0,len(T.templates)):
-                T.templates[ii].prepick = prepick_len 
-            if len(st)==0: continue
-            try:
-                party = T.detect(stream=st,starttime=st[0].stats.starttime,endtime=st[-1].stats.endtime,threshold=thr, threshold_type=thr_t,xcorr_func = xfunc,trig_int=trig_int, plot=plot, return_stream=r_st, ignore_bad_data=i_b_d,overlap=overlap,cores=cores)
-            except:
-                print('can\'t detect')
+                print('No tgz for Station')
                 continue
-            party.decluster(metric=metric,trig_int=trig_int) #had to add trig_int, it is minimum detection separation in seconds
-            t2=time()
-            print(f"it tooks {t2-t1} s to launch the party")
-            print(party)
-            print('detections:',len(party))
-            if len(party) > 0: 
-                print(party[0])
-                print(party.families)
-                parties.append(party)
-                for ii in range(0,len(parties[0].families)):
-                    for iii in range(0,len(parties[0].families[ii].detections)):
-                        row = [str(parties[0].families[ii].detections[iii].id),
-                               str(parties[0].families[ii].detections[iii].template_name),
-                               str(parties[0].families[ii].detections[iii].detect_time)]
-                        with open(homedir+'detections/'+volc_list_names[vv]+'_'+v[s]+'_'+str(year)+'_detections.csv', 'a',
-                                  newline='') as file:
-                            writer = csv.writer(file)
-                            writer.writerow(row)
-                            file.close()
+    #         try:
+    #             obspy.read(glob(f'{datadir}{year}/{net}/{sta}/{sta}.{net}.{year}.*')[0]).select(channel=chan)
+    #         except:
+    #             print('No Data for Station')
+    #             continue
+            if UTCDateTime(volc_md[volc_md['netsta']==v[s]]['Starttime'].values.tolist()[0]).year <= year: #if the year of the startime of this station is less than or equal to the year we are running
+                if UTCDateTime(volc_md[volc_md['netsta']==v[s]]['Endtime'].values.tolist()[0]).year >= year: #if the year of the endtime is greater than or equal to the year we are running
+                    with open(homedir+'detections/'+volc_list_names[vv]+'_'+v[s]+'_'+str(year)+'_detections.csv', 'w', newline='') as file: # if both are true, create csv
+                        writer = csv.writer(file)
+                        writer.writerow(["ID", "Template_Name", "Detection_Time"])
+                        file.close()
+                else: #if endtime statement is NOT true
+                    continue #skip this station for this year
+            else: #if starttime statement is NOT true
+                continue #skip this station for this year
+            for i in range(1,366): # normally 1,366
+                print('------')
+                parties = []
+                t0=time()
+    #             st = obspy.read(*glob(f'{datadir}{year}/*/{sta}/{sta}.{net}.{year}.{str(i).zfill(3)}')).select(channel=chan)
+                sst = UTCDateTime(year=year,julday=i,hour=0,minute=0,second=0)
+                try:
+                    st = client.get_waveforms(network=net, station=sta, channel=chan, location='*',starttime=sst, endtime=sst+86400)
+                except:
+                    print(f'No data available for request. {net}.{sta} day {i}')
+                    continue            
+                st.detrend(type='demean')
+                st.resample(fs)
+                st.filter(type='bandpass',freqmin=fqmin,freqmax=fqmax)
+                st.merge(fill_value=0)
+                t1=time()
+                print("it tooks %2f s to download data" %(t1-t0))
+                print(st)
+                print(str(year)+str(i).zfill(3))
+                for ii in range(0,len(T.templates)):
+                    T.templates[ii].prepick = prepick_len 
+                if len(st)==0: continue
+                try:
+                    party = T.detect(stream=st,starttime=st[0].stats.starttime,endtime=st[-1].stats.endtime,threshold=thr, threshold_type=thr_t,xcorr_func = xfunc,trig_int=trig_int, plot=plot, return_stream=r_st, ignore_bad_data=i_b_d,overlap=overlap,cores=cores)
+                except:
+                    print('can\'t detect')
+                    continue
+                party.decluster(metric=metric,trig_int=trig_int) #had to add trig_int, it is minimum detection separation in seconds
+                t2=time()
+                print(f"it tooks {t2-t1} s to launch the party")
+                print(party)
+                print('detections:',len(party))
+                if len(party) > 0: 
+                    print(party[0])
+                    print(party.families)
+                    parties.append(party)
+                    for ii in range(0,len(parties[0].families)):
+                        for iii in range(0,len(parties[0].families[ii].detections)):
+                            row = [str(parties[0].families[ii].detections[iii].id),
+                                   str(parties[0].families[ii].detections[iii].template_name),
+                                   str(parties[0].families[ii].detections[iii].detect_time)]
+                            with open(homedir+'detections/'+volc_list_names[vv]+'_'+v[s]+'_'+str(year)+'_detections.csv', 'a',
+                                      newline='') as file:
+                                writer = csv.writer(file)
+                                writer.writerow(row)
+                                file.close()
     #         break
     #    break
 t01 = time()

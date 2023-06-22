@@ -58,7 +58,7 @@ num_states = config['num_states']
 batches_hmm = config['batches_hmm']
 
 savedir = config['homedir']+'h5/' #directory to save h5 file in
-h5name = 'Rainier_template_waveforms.h5'
+h5name = f'{volc}_template_waveforms.h5'
 
 print(path+h5name)
 
@@ -200,7 +200,7 @@ fingerprints, As, gams = hmm.transform(Vs) #create fingerprints
 
 ##########################################################################################
 
-print(f"saved to: {savedir}new_{h5name}"
+print(f"saved to: {savedir}new_{h5name}")
 
 with h5py.File(f"{savedir}new_{h5name}", "w") as f:
     f.create_dataset("waveforms", data=np.array(tdf['waveform'].values.tolist())) #save from tdf to exclude any dropped

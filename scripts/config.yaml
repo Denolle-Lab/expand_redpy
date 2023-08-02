@@ -148,7 +148,7 @@ rpwi: 15
 
 #length of trimmed window in seconds
 winlen: 40
-#number per segment, affects time resolution (smaller == more resolution)
+#number per segment, frequency (fs) divided by nperseg is the lowest resolution (example, 40/64 = 0.625 Hz)
 nperseg: 64
 #number to divide nperseg by, to find overlap (currently noverlap = nperseg/dnoverlap)
 dnoverlap: 4

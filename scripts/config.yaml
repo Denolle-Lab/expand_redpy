@@ -163,4 +163,4 @@ batch_size: 1
 #number of batches to run through HMM
 batches_hmm: 5000
 #number of states to run through HMM
-num_states: 15
+num_states: 30

@@ -1,3 +1,8 @@
+### CREATES TEMPLATES FROM NORMALIZED CONSTITUENT WAVEFORMS ###
+# the waveforms saved to h5 at the end are not, themselves, normalized #
+# their absolute amplitude will vary, this is fixed in norm_fingerprint_creation.py #
+
+
 import yaml
 import numpy as np
 import math
@@ -15,9 +20,6 @@ import h5py
 # %matplotlib inline
 import sys
 sys.path.append("/data/wsd01/pnwstore/")
-import eqcorrscan
-from eqcorrscan.core.match_filter import match_filter
-from eqcorrscan.core.match_filter.tribe import Tribe
 import pandas as pd
 
 from time import time

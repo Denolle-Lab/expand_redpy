@@ -1,3 +1,7 @@
+### THIS CREATES FINGERPRINTS FROM TEMPLATES CREATED FROM NORMALIZED CONSTITUENT WAVEFORMS ###
+
+
+
 #imports
 from eqcorrscan import Tribe #reading tgz files with templates
 import obspy
@@ -102,7 +106,7 @@ def maxwindow(st,winlen,fs): #provide stream object (one trace each), window len
     
     tw_trim = final_tw.trim(stt+max_sec,stt+max_sec+winlen) #use sec to trim the window corretly
 #     print('Max Window:') #show the maximum window
-    tw_trim.plot();
+#     tw_trim.plot();
     
     return(Stream(tw_trim)) #return the stream of the maximum window
 
@@ -125,10 +129,10 @@ print(f"{len(waveforms)} waveforms in file")
 
 
 waveforms_n = []
-t = trange(len(waveforms), desc="Trimming Waveforms ", leave=True)
+t = trange(len(waveforms), desc="Trimming and Normalizing Waveforms ", leave=True)
 for i in t:
     wave = waveforms[i]
-    wave_ = Trace(wave)
+    wave_ = Trace(wave).normalize() #read as a trace and normalize
 #     wave_.plot();
     new_wave = maxwindow(Stream(traces=[wave_]),winlen,fs)
     waveforms_n.append(np.array(new_wave[0].data))

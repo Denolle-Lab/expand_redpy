@@ -19,7 +19,7 @@ device = torch.device("cpu")
 
 
 def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
-               t_before=15,t_around=5,thr=0.01):
+               istart, iend, t_before=15,t_around=5,thr=0.01):
     """"
     This function takes a array of stream, a list of stations, a list of ML
     models and apply these models to the data, predict phase picks, and
@@ -117,14 +117,14 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
     # all waveforms starts - 15s from reference picks
     # allow for +/- 10 seconds around reference picks.
     sfs = MBF_paras["fs"]
-    istart = 0 #t_before*sfs - t_around*sfs
-    iend = 88*40 #np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
+    istart = istart #t_before*sfs - t_around*sfs
+    iend = iend #np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
     for ista in range(nsta):# should be 1 in this context
         # 0 for P-wave
         smb_pred[ista, :] = ensemble_semblance(batch_pred[:, ista, :],\
                                              paras_semblance)
         plt.plot(smb_pred[ista, :])
-        imax = np.argmax(smb_pred[ ista,istart:iend]) 
+        imax = np.argmax(smb_pred[ista,istart:iend]) 
 #         print(imax)
 #         print("max probab",smb_pred[ista,imax+istart])
         if smb_pred[ista, imax+istart] > thr:

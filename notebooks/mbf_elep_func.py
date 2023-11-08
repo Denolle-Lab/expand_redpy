@@ -13,6 +13,7 @@ import obspy
 from ELEP.elep.mbf_utils import make_LogFq, make_LinFq, rec_filter_coeff
 from ELEP.elep.mbf import MB_filter
 import matplotlib.pyplot as plt
+from scipy import signal
 
 
 device = torch.device("cpu")
@@ -117,9 +118,10 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
     # all waveforms starts - 15s from reference picks
     # allow for +/- 10 seconds around reference picks.
     sfs = MBF_paras["fs"]
-    istart = istart #t_before*sfs - t_around*sfs
-    iend = iend #np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
+    istart = int(istart) #t_before*sfs - t_around*sfs
+    iend = int(iend) #np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
     for ista in range(nsta):# should be 1 in this context
+                
         # 0 for P-wave
         smb_pred[ista, :] = ensemble_semblance(batch_pred[:, ista, :],\
                                              paras_semblance)
@@ -130,14 +132,16 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
         if smb_pred[ista, imax+istart] > thr:
             smb_peak[ista] = float((imax)/sfs)#-t_around
 
- 
+
         # 0 for P-wave
         smb_pred_mbf[ista, :] = ensemble_semblance(batch_pred_mbf[:, ista, :], paras_semblance)
         imax = np.argmax(smb_pred_mbf[ista, istart : iend])# search for peak in the first 80 seconds
 #         print("max probab",smb_pred[ista,imax+istart])
         if smb_pred_mbf[ista, imax+istart] > thr:
             smb_peak_mbf[ista] = float(imax/sfs)#-t_around
+            
+        peaks = signal.find_peaks(smb_pred[ista, :])
 
 
     # below return the time of the first pick aas a list over stations
-    return smb_peak, smb_peak_mbf
+    return smb_peak, smb_peak_mbf, peaks

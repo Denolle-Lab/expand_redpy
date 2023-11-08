@@ -96,7 +96,7 @@ volc_sta = [Baker_sta,Hood_sta,Newberry_sta,Rainier_sta,St_Helens_sta] # lists o
 # for vv,v in enumerate(volc_sta): #vv is the number in the list, v is the station list for current volcano
 v = volc_sta[vv]
 clid = volc_list[vv]['Clustered'].values.tolist() #find the largest cluster ID for a volcano to set range
-for s in range(0,len(v)): #loop through stations
+for s in range(11,len(v)): #loop through stations
     norm_stack_list = [] #list of normalized stacks for every cluster
     norm_stack_names = [] #list of names for the normalized stacks
     

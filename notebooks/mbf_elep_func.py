@@ -120,6 +120,8 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
     sfs = MBF_paras["fs"]
     istart = int(istart) #t_before*sfs - t_around*sfs
     iend = int(iend) #np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
+    print(f'istart {istart} or {istart/sfs} seconds; iend {iend} or {iend/sfs} seconds')
+    
     for ista in range(nsta):# should be 1 in this context
                 
         # 0 for P-wave
@@ -134,14 +136,19 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
 
 
         # 0 for P-wave
-        smb_pred_mbf[ista, :] = ensemble_semblance(batch_pred_mbf[:, ista, :], paras_semblance)
-        imax = np.argmax(smb_pred_mbf[ista, istart : iend])# search for peak in the first 80 seconds
-#         print("max probab",smb_pred[ista,imax+istart])
-        if smb_pred_mbf[ista, imax+istart] > thr:
-            smb_peak_mbf[ista] = float(imax/sfs)#-t_around
+#         smb_pred_mbf[ista, :] = ensemble_semblance(batch_pred_mbf[:, ista, :], paras_semblance)
+#         imax = np.argmax(smb_pred_mbf[ista, istart : iend])# search for peak in the first 80 seconds
+# #         print("max probab",smb_pred[ista,imax+istart])
+#         if smb_pred_mbf[ista, imax+istart] > thr:
+#             smb_peak_mbf[ista] = float(imax/sfs)#-t_around
             
-        peaks = signal.find_peaks(smb_pred[ista, :])
+        peaks = signal.find_peaks(smb_pred[ista, istart:iend],distance=5*sfs, height=0.03)
+        
+        print(peaks[0])
+        
+        if len(peaks[0]) == 0:
+            peaks = signal.find_peaks(smb_pred[ista, istart:iend],distance=5*sfs)
 
 
     # below return the time of the first pick aas a list over stations
-    return smb_peak, smb_peak_mbf, peaks
+    return peaks,smb_pred #smb_peak, smb_peak_mbf, 

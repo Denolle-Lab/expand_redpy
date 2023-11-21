@@ -84,62 +84,6 @@ volc_md = pd.read_csv(readdir+'Volcano_Metadata.csv')
 volc_md['netsta'] = volc_md['Network'].astype(str)+'.'+volc_md['Station'].astype(str)
 
 
-# In[4]:
-
-
-#color map for plotting
-def get_cmap(n, name='viridis'): #hsv
-#     Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
-#     RGB color; the keyword argument name must be a standard mpl colormap name.
-    return plt.cm.get_cmap(name, n)
-
-# define function to predict synthetic arrival times
-def travel_time(t0, x, y, vs, sta_x, sta_y):
-    dist = np.sqrt((sta_x - x)**2 + (sta_y - y)**2)
-    tt = t0 + dist/vs
-    return tt
-
-# define function to compute residual sum of squares
-def error(synth_arrivals,arrivals):
-    res = arrivals - synth_arrivals   #make sure arrivals are in the right order, maybe iterate through keys
-    res_sqr = res**2
-    rss = np.sum(res_sqr)
-    return rss
-
-# define function to iterate through grid and calculate travel time residuals
-def gridsearch(t0,x_vect,y_vect,sta_x,sta_y,vs,arrivals):
-    rss_mat = np.zeros((len(t0),len(x_vect),len(y_vect)))
-    rss_mat[:,:,:] = np.nan
-    for i in range(len(t0)): 
-        for j in range(len(x_vect)):
-            for k in range(len(y_vect)):
-                for m in range(len(vs)): #parameterize velocity
-                    synth_arrivals = []
-                    for h in range(len(sta_x)):
-                        tt = travel_time(t0[i],x_vect[j],y_vect[k],vs[m],sta_x[h],sta_y[h]) 
-                    #add vs in nested loop, vector 1000-5000, per cluster to account for p and s waves
-                        synth_arrivals.append(tt)
-                    rss = error(np.array(synth_arrivals),np.array(arrivals))
-                    rss_mat[i,j,k] = rss
-    return rss_mat
-
-# define function to convert the location index into latitude and longitude
-def location(x_dist, y_dist, start_lat, start_lon):
-    bearing = 90-np.rad2deg(np.arctan(y_dist/x_dist))
-    dist = np.sqrt((x_dist)**2 + (y_dist)**2)
-    d = distance.geodesic(meters = dist)
-    loc_lat = d.destination(point=[start_lat,start_lon], bearing=bearing)[0]
-    loc_lon = d.destination(point=[start_lat,start_lon], bearing=bearing)[1]
-    return loc_lat, loc_lon, d
-
-# define function to find diameter in meters of the error on the location
-def error_diameter(new_array):
-    min_idx = np.min(new_array[:,1])
-    max_idx = np.max(new_array[:,1])
-    difference = max_idx-min_idx
-    diameter_m = difference*1000
-    return diameter_m 
-
 #get clusterid from template name
 def getcl_id(t_name_str): #for normalized
     t_cl = int(t_name_str.split('_')[-1])
@@ -214,17 +158,17 @@ h5_name = f'{homedir}h5/{volc_list_names[vv]}_ELEP_smb_pred.h5' #name of h5 file
 
 
 # create csv for volcano
-with open(csv_name, 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(['Network','Station','Cluster_ID','Template_Name','SMB_peak']) #,'SMB_peak_MBF'
-    file.close()
+# with open(csv_name, 'w', newline='') as file:
+#     writer = csv.writer(file)
+#     writer.writerow(['Network','Station','Cluster_ID','Template_Name','SMB_peak']) #,'SMB_peak_MBF'
+#     file.close()
 
 
-# In[10]:
+
 
 ### PULL IN TEMPLATES ###
 # cl_trange = trange(max(clid), desc="Finding picktimes for each cluster", leave=True)
-cl_trange=range(0,max(clid))
+cl_trange=range(101,max(clid))
 for cl in cl_trange:
 #     print('------') #print a divider
 #     print("cluster:",str(cl).zfill(cllen)) #print the cluster ID
@@ -300,6 +244,10 @@ for cl in cl_trange:
                 row = [net, sta, cl, t, csv_picks] ### APPEND PICKS NOT PEAKS
                 rows.append(row)
 
+    if len(temps_n)==0:
+        print(f'no templates for cluster {cl}')
+        continue
+                
     ### FILTERING PEAKS ###
 
     one_peak = [] #list of n and y if the template only has one peak/picktime

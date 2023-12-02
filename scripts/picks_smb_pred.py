@@ -158,17 +158,17 @@ h5_name = f'{homedir}h5/{volc_list_names[vv]}_ELEP_smb_pred.h5' #name of h5 file
 
 
 # create csv for volcano
-# with open(csv_name, 'w', newline='') as file:
-#     writer = csv.writer(file)
-#     writer.writerow(['Network','Station','Cluster_ID','Template_Name','SMB_peak']) #,'SMB_peak_MBF'
-#     file.close()
+with open(csv_name, 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Network','Station','Cluster_ID','Template_Name','SMB_peak']) #,'SMB_peak_MBF'
+    file.close()
 
 
 
 
 ### PULL IN TEMPLATES ###
 # cl_trange = trange(max(clid), desc="Finding picktimes for each cluster", leave=True)
-cl_trange=range(101,max(clid))
+cl_trange=range(0,max(clid)+1)
 for cl in cl_trange:
 #     print('------') #print a divider
 #     print("cluster:",str(cl).zfill(cllen)) #print the cluster ID

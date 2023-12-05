@@ -9,8 +9,6 @@ We look at the REDPy <a href="https://github.com/ahotovec/REDPy">(Repeating Eart
 
 We use eqcorrscan <a href="https://www.dropbox.com/s/rscu5odvn1bbr2s/Chamberlain18.pdf?dl=0">(Chamberlain et al, 2018)</a>  and the Fast Matched Filter <a href="https://doi.org/10.1785/0220170181">(Beauce and Frank, 2018)</a> to run template matching on GPUs.
 
-Recently, we have been looking at <a href="https://www.science.org/doi/10.1126/sciadv.aao2929">SpecUFEx</a> to fingerprint events.
-
 <h2>Methods/Process</h2>
 We select stations with make_volcano_metadata.ipynb, generate templates in make_templates.ipynb, locate templates in template_locations.ipynb, detect with templates in find_detections.ipynb, make events in find_events.ipynb, and do post processing in remove_redpy_overlap.ipynb.
 <img src="methods.jpg" alt="Methods Flowchart">

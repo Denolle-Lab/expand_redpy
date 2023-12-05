@@ -56,7 +56,6 @@ nsta = config['nsta']
 nlta = config['nlta']
 pr = config['pr']
 
-print(vv)
 
 Baker = pd.read_csv(readdir+'Baker_catalog.csv')
 Hood = pd.read_csv(readdir+'Hood_catalog.csv')
@@ -93,10 +92,12 @@ volc_list = [Baker,Hood,Newberry,Rainier,St_Helens] # list of dataframes for eac
 volc_list_names = ['Baker','Hood','Newberry','Rainier','St_Helens'] # list of names of each volcano
 volc_sta = [Baker_sta,Hood_sta,Newberry_sta,Rainier_sta,St_Helens_sta] # lists of stations connected to respective volcanoes
 
+print(volc_list_names[vv])
+
 # for vv,v in enumerate(volc_sta): #vv is the number in the list, v is the station list for current volcano
 v = volc_sta[vv]
 clid = volc_list[vv]['Clustered'].values.tolist() #find the largest cluster ID for a volcano to set range
-for s in range(11,len(v)): #loop through stations
+for s in range(0,len(v)): #loop through stations
     norm_stack_list = [] #list of normalized stacks for every cluster
     norm_stack_names = [] #list of names for the normalized stacks
     

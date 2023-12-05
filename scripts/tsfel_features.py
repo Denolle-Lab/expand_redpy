@@ -55,7 +55,8 @@ vs_step = config['vs_step']
 volc_lat_lon = config['volc_lat_lon']
 volc_list_names = config['volc_list_names']
 
-vv = config['vv']
+# vv = config['vv']
+vv=3
 
 
 print(volc_list_names[vv])
@@ -103,7 +104,7 @@ cfg_file = tsfel.get_features_by_domain()
 
 # Extract features for earthquakes
 features_eqz = pd.DataFrame([])
-for i in range(len(all_temps)):
+for i in range(len(all_temps)+1):
     try:
     
         df = time_series_features_extractor(cfg_file, eq_Z[i], fs=40,)

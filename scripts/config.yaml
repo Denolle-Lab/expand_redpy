@@ -15,7 +15,7 @@ homedir: /home/smocz/expand_redpy_new_files/
 #directory to get downloaded waveforms from
 datadir: /fd1/wave_data/ 
 #directory to read catalogs from
-readdir: /home/smocz/expand_redpy/csv_catalogs/
+readdir: /home/smocz/expand_redpy/catalogs/
 #year to run and find events from
 year: 2020
 #list of years to find events from
@@ -39,7 +39,7 @@ volc_lat_lon:
 #radius in deg (0.450 ~= 50km) (0.27 ~= 30km) (0.315 ~= 35km)
 rad: '0.315'
 #path to and name of volcano metadata file
-csv_name: '/home/smocz/expand_redpy/csv_catalogs/Volcano_Metadata.csv'
+csv_name: '/home/smocz/expand_redpy/catalogs/Volcano_Metadata.csv'
 
 # =================================================
 # STREAM FILTERING

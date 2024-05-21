@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
 
 # Import Everything
 
-# In[1]:
-
-
-import pandas as pd
 import yaml
 import numpy as np
+import pandas as pd
 import obspy
 from obspy import UTCDateTime
 from time import time

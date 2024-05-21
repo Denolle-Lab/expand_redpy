@@ -229,14 +229,14 @@ for cl in cl_trange:
                                    'semblance_win':0.5, 'weight_flag':'max'}
                 
                 #find picktimes!
-                peaks,smb_pred = apply_mbf(evt_data, sta_available,                 list_models, MBF_paras, paras_semblance, istart, iend) #smb_peak,smb_peak_mbf,
+                peaks,smb_pred = apply_mbf(evt_data, sta_available, list_models, MBF_paras, paras_semblance, istart, iend) #smb_peak,smb_peak_mbf,
                 
                 
                 print(peaks[0]) # THESE PICKS ARE OFFSET BY ISTART
                 
                 picks = [i+istart for i in peaks[0]] # ADDED ISTART
                 temps_p.append(picks)
-                csv_picks=' '.join([str(i/fs)for i in picks]) #formatted for saving in csv
+                csv_picks=' '.join([str(i/fs)for i in picks]) #formatted for saving in csv (i/fs = pick time in seconds)
                 
                 preds.append([smb_pred])
         
@@ -251,13 +251,13 @@ for cl in cl_trange:
     ### FILTERING PEAKS ###
 
     one_peak = [] #list of n and y if the template only has one peak/picktime
-    for p in temps_p: #for saved picks
-        if len(p)==1:
+    for p in temps_p: #for each template's picks
+        if len(p)==1: #if only one possible pick
             one_peak.append('y')
-        else:
+        else: 
             one_peak.append('n')
             
-    if one_peak.count('y')/len(one_peak) ==1: #if there is only one peak per template
+    if one_peak.count('y')/len(one_peak) ==1: #if there is only one peak per template for all templates in this cluster
         #write info to csv as is
         for row in rows:
             with open(csv_name, 'a', newline='') as file:
@@ -265,9 +265,9 @@ for cl in cl_trange:
                 writer.writerow(row)
                 file.close()
             
-    if one_peak.count('y')/len(one_peak) >=0.5 and one_peak.count('y')/len(one_peak) <1: #if 75% of templates have one peak
+    if one_peak.count('y')/len(one_peak) >=0.5 and one_peak.count('y')/len(one_peak) <1: #if 50-75% of templates have one peak
         
-        one_p_value = [] #list of peak values when there is only one
+        one_p_value = [] #list of peak values for templates with only one possible peak AKA "confirmed" peaks
         for peaks in temps_p:
             if len(peaks)==1:
                 one_p_value.append(peaks[0])
@@ -294,11 +294,11 @@ for cl in cl_trange:
                 file.close()
                 
                 
-    if one_peak.count('y')/len(one_peak) <0.5:
+    if one_peak.count('y')/len(one_peak) <0.5: #if less than 50% of templates in a cluster have "confirmed" peaks
         
-        for en,peaks in enumerate(temps_p):
-            if len(peaks)>1:
-                rows[en][-1] = 'UNCERTAIN'
+        for en,peaks in enumerate(temps_p): #for each list of peaks in the cluster
+            if len(peaks)>1: #if more than one possible peak
+                rows[en][-1] = 'UNCERTAIN' #label the pick for that template waveform as "uncertain"
                 
         #write updated info to csv
         for row in rows:

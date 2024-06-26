@@ -168,7 +168,7 @@ with open(csv_name, 'w', newline='') as file:
 
 ### PULL IN TEMPLATES ###
 # cl_trange = trange(max(clid), desc="Finding picktimes for each cluster", leave=True)
-cl_trange=range(0,max(clid)+1)
+cl_trange=range(0,max(clid)+1) #max(clid)+1
 for cl in cl_trange:
 #     print('------') #print a divider
 #     print("cluster:",str(cl).zfill(cllen)) #print the cluster ID

@@ -51,7 +51,7 @@ volc_md['netsta'] = volc_md['Network'].astype(str)+'.'+volc_md['Station'].astype
     
 t0 = time() #record time
 
-for year in years: #for each year
+for year in years:
 
     #get detections at this volcano in this year
     sta_list = volc_md[volc_md['Volcano_Name']==volc]['netsta'].values.tolist() #get a list of stations at this volcano
@@ -89,7 +89,7 @@ for year in years: #for each year
         #just numbers
     cl_list = np.unique(cl_list_long) #get rid of duplicates
 
-    csv_name = homedir+f'events/{volc}_{year}_events.csv'
+    csv_name = homedir+f'events/{volc}_{year}_events_minsta{minsta}_delay{wi}.csv'
     with open(csv_name, 'w', newline='') as file: #make a csv to save to
         writer = csv.writer(file)
         writer.writerow(["Earliest_Detection_Time","Cluster_ID","Stations_Found","Stations"]) #,"Stations_Diff"
@@ -99,11 +99,14 @@ for year in years: #for each year
     for cl in cl_list: #for each cluster
         t1 = time() #record time
         times = [] #get list of datetimes for all templates for this cluster
+        stas = [] #get list of station names for all templates for this cluster (same index as times)
         for i in np.unique(temp_name_list): #for each template
             if i.endswith(cl): #if the template ends with the cluster ID
                 all_times = readsta[readsta['Template_Name']==i]['Detection_Time'].values.tolist() #find the times for that template
+                temp_sta = i[:-10].upper()
                 for at in all_times:
                     times.append(at) #append each template time to the list of datetimes
+                    stas.append(temp_sta) #append the station to the list
         for ii,i in enumerate(times): #for all detections
             t3 = time()
     #run through each detection time on all stations
@@ -114,29 +117,36 @@ for year in years: #for each year
             times_diff = []
             match_list = []
             for ss,s in enumerate(sta_list): #for each station
-                statimes = [] #get the times for this station
-                try:
-                    readstadict[s]['Template_Name']
-                except:
-                    print(f'no data available for {s} in {year}')
-                    continue
-                for a in np.unique(readstadict[s]['Template_Name'].values.tolist()):
-                    # for every template in this station's df
-                    if a.endswith(cl): #if it matches this cluster
-                        all_times = readstadict[s][readstadict[s]['Template_Name']==a]['Detection_Time'].values.tolist() 
-                        #get a list of detection times at this station for this cluster
-                        for at in all_times:
-                            statimes.append(at) #append to statimes
-                match=0 #set variable to arbitrary number
-                for tt,t in enumerate(statimes): #for every datetime in the station's detections for this cluster
-                    ts = UTCDateTime(t)-wi #find the time wi s before
-                    te = UTCDateTime(t)+wi #find the time wi s after
-                    if UTCDateTime(i)>ts and UTCDateTime(i)<te:
-                        diff = UTCDateTime(i)-UTCDateTime(t)
-                        match=2 #if there is an overlap, reset the variable and break out of the loop
-                        print('Overlap with station '+s+' detections')
-                        break
-#                     times_diff.append(diff)
+                
+                if stas[ii]==s.split('.')[1]: #if this station is the same one the detection came from
+                    match=2
+                    print('Auto overlap with station '+s+' detections')
+                    
+                else:
+                
+                    statimes = [] #get the times for this station
+                    try:
+                        readstadict[s]['Template_Name']
+                    except:
+                        print(f'no data available for {s} in {year}')
+                        continue
+                    for a in np.unique(readstadict[s]['Template_Name'].values.tolist()):
+                        # for every template in this station's df
+                        if a.endswith(cl): #if it matches this cluster
+                            all_times = readstadict[s][readstadict[s]['Template_Name']==a]['Detection_Time'].values.tolist() 
+                            #get a list of detection times at this station for this cluster
+                            for at in all_times:
+                                statimes.append(at) #append to statimes
+                    match=0 #set variable to arbitrary number
+                    for tt,t in enumerate(statimes): #for every datetime in the station's detections for this cluster
+                        ts = UTCDateTime(t)-wi #find the time wi s before
+                        te = UTCDateTime(t)+wi #find the time wi s after
+                        if UTCDateTime(i)>ts and UTCDateTime(i)<te:
+                            diff = UTCDateTime(i)-UTCDateTime(t)
+                            match=2 #if there is an overlap, reset the variable and break out of the loop
+                            print('Overlap with station '+s+' detections')
+                            break
+    #                     times_diff.append(diff)
                 match_list.append(match)
             print('match_list:',match_list)
 
@@ -182,10 +192,6 @@ for year in years: #for each year
         print(t4-t1,'seconds for cluster',cl)
     t5 = time()
     print(t5-t0,'seconds to find all new events on',volc,'in',year)
-
-
-# In[ ]:
-
 
 
 

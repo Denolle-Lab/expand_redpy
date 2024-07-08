@@ -131,7 +131,7 @@ metric: avg_cor
 #time in seconds before and after a detect time to check for overlap with other detect times
 wi: 3
 #minimum number of stations with detections needed to make an event
-minsta: 1
+minsta: 3
 #how rough or smooth the envelope is
 smooth_length: 1
 

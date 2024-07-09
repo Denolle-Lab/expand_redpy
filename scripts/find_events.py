@@ -1,9 +1,6 @@
-
-# Import Everything
-
+import pandas as pd
 import yaml
 import numpy as np
-import pandas as pd
 import obspy
 from obspy import UTCDateTime
 from time import time
@@ -11,18 +8,18 @@ import csv
 from glob import glob
 import re
 
-
-# In[6]:
-
-
 with open('/home/smocz/expand_redpy/scripts/config.yaml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 
 vv = config['vv']
+# vv=0
 volc_list_names = config['volc_list_names']
 volc = volc_list_names[vv]
+print(volc)
 year = config['year']
 years = config['years']
+# years = [2013,2014]
+print(years)
 
 homedir = config['homedir']
 readdir = config['readdir']
@@ -32,41 +29,36 @@ minsta = config['minsta']
 #time in seconds before and after a detection to check for similar detections
 wi = config['wi']
 
-
-# In[3]:
-
+print(minsta,wi)
 
 volc_md = pd.read_csv(readdir+'Volcano_Metadata.csv') #read volcano metadata
 volc_md['netsta'] = volc_md['Network'].astype(str)+'.'+volc_md['Station'].astype(str) 
 #combine network and station to keep them associated
 
-
-# Main loop - finding overlaps - updated december 1, 2022
-
-# In[ ]:
-
-
 # for vv,v in enumerate(volc_list_names): #for each volcano
 #     volc = v
     
-t0 = time() #record time
+t00 = time() #record time
 
+# for year in years: #for each year
 for year in years:
+    t0 = time()
 
     #get detections at this volcano in this year
     sta_list = volc_md[volc_md['Volcano_Name']==volc]['netsta'].values.tolist() #get a list of stations at this volcano
     readstadict = {} #will become a dictionary of dataframes of station detections
     for i in sta_list: #for each station at the volcano
+#         print(homedir+f'detections/{volc}_{i}_{year}_detections.csv')
         try: 
             readstadict[i] = pd.read_csv(homedir+f'detections/{volc}_{i}_{year}_detections.csv') 
-            #get a dictionary of detections at each station
+            print(f'successfully read {i} in {year}')
         except: #if the detection final does NOT exist
             print(f'no detections for {i} in {year}') #say so
             readstadict[i] = pd.DataFrame() #make an empty data frame maintain index
 
     print('---')
 
-    rsta_list = [] #list version of readstadict
+    rsta_list = [] #list version of readstadict for making a dataframe
     for i in readstadict: #making rsta_list
         rsta_list.append(readstadict[i])
     readsta = pd.concat(rsta_list) #make a single dataframe for the whole volcano from the list of station dataframs
@@ -75,7 +67,7 @@ for year in years:
     print('----')
 
     print(readsta)
-
+    
     #for all detections we want to run (concatenated), make cl_list for the volcano
     temp_name_list = readsta['Template_Name'].values.tolist() #make a list of template names
     cl_list_long = [] # make a list of the numbers in each template name
@@ -89,7 +81,7 @@ for year in years:
         #just numbers
     cl_list = np.unique(cl_list_long) #get rid of duplicates
 
-    csv_name = homedir+f'events/{volc}_{year}_events_minsta{minsta}_delay{wi}.csv'
+    csv_name = homedir+f'events/{volc}_{year}_events.csv'
     with open(csv_name, 'w', newline='') as file: #make a csv to save to
         writer = csv.writer(file)
         writer.writerow(["Earliest_Detection_Time","Cluster_ID","Stations_Found","Stations"]) #,"Stations_Diff"
@@ -107,6 +99,7 @@ for year in years:
                 for at in all_times:
                     times.append(at) #append each template time to the list of datetimes
                     stas.append(temp_sta) #append the station to the list
+                    
         for ii,i in enumerate(times): #for all detections
             t3 = time()
     #run through each detection time on all stations
@@ -127,8 +120,10 @@ for year in years:
                     statimes = [] #get the times for this station
                     try:
                         readstadict[s]['Template_Name']
+                        print(f'successfully read {s} in {year}')
                     except:
                         print(f'no data available for {s} in {year}')
+                        match_list.append(0)
                         continue
                     for a in np.unique(readstadict[s]['Template_Name'].values.tolist()):
                         # for every template in this station's df
@@ -149,6 +144,8 @@ for year in years:
     #                     times_diff.append(diff)
                 match_list.append(match)
             print('match_list:',match_list)
+            
+    
 
             t2 = time()
             print(t2-t3,'seconds to test overlap for detection',ii)
@@ -157,9 +154,10 @@ for year in years:
             for mm,m in enumerate(match_list):
                 if m==2:
                     save_list.append(sta_list[mm])
+                    
+            print(save_list)
 
             if match_list.count(2) >= minsta: #if at least 4 matches equal 2:
-    #         if match==2 and match0==2 and match1==2 and match2==2:
                 print('saving...')
                 check = pd.read_csv(csv_name) #read the csv we made
                 checktimes = check[check['Cluster_ID']==int(cl)]['Earliest_Detection_Time'].values.tolist() 
@@ -192,6 +190,4 @@ for year in years:
         print(t4-t1,'seconds for cluster',cl)
     t5 = time()
     print(t5-t0,'seconds to find all new events on',volc,'in',year)
-
-
-
+print(t5-t00,'seconds to find all new events on',volc,'in',years)

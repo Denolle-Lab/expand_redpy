@@ -81,7 +81,7 @@ for year in years:
         #just numbers
     cl_list = np.unique(cl_list_long) #get rid of duplicates
 
-    csv_name = homedir+f'events/{volc}_{year}_events.csv'
+    csv_name = homedir+f'events/{volc}_{year}_events_minsta{minsta}.csv'
     with open(csv_name, 'w', newline='') as file: #make a csv to save to
         writer = csv.writer(file)
         writer.writerow(["Earliest_Detection_Time","Cluster_ID","Stations_Found","Stations"]) #,"Stations_Diff"
